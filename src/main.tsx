@@ -5,9 +5,9 @@ import './styles/global.css';
 import { WatchlistProvider } from './context/WatchlistContext.tsx';
 
 createRoot(document.getElementById('root')!).render(
+  <StrictMode>
   <WatchlistProvider>
-    <StrictMode>
       <App />
-    </StrictMode>
   </WatchlistProvider>
+  </StrictMode>
 )

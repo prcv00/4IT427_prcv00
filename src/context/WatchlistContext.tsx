@@ -17,38 +17,40 @@ type WatchlistContextType = {
     markAllAsWatched: () => void;
 
 }
-const WatchlistContext = createContext<WatchlistContextType>({ 
-    films:initialFilms, 
-    addFilm: () => {}, 
-    removeFilm: () => {}, 
-    toggleWatched: () => {}, 
-    markAllAsWatched: () => {}});
+const WatchlistContext = createContext<WatchlistContextType | null>(null);
 
-export function WatchlistProvider({ children }: { children: ReactNode }) {
-    const [films, setFilms] = useState<Film[]>(initialFilms)
 
-    function toggleWatched(id:string){
-        return () => (
-            setFilms(prev => prev.map(film =>
-            film.id === id? {...film, watched:!film.watched} : film
-        )))
-    }
+interface WatchlistProviderProps {
+  children: ReactNode;
+}
 
-    function markAllAsWatched(){
-        return setFilms(prev => prev.map(film => ({...film, watched:true})))
-    }
+export function WatchlistProvider({ children }: WatchlistProviderProps) {
+    const [films, setFilms] = useState<Film[]>(initialFilms);
 
-    function addFilm(film:Film){
-        return () => (
-            setFilms(prev => [...prev, film]
-        ))
-    }
+    const addFilm = (film: Film) => {
+        setFilms((prevFilms) => [...prevFilms, film]);
+    };
 
-    function removeFilm(id:string){
-        return () => (
-            setFilms(prev => prev.filter(f=>f.id !== id)
-        ))
-    }
+    const removeFilm = (id: string) => {
+        setFilms((prevFilms) => prevFilms.filter((film) => film.id !== id));
+    };
+
+    const toggleWatched = (id: string) => {
+        setFilms((prevFilms) =>
+        prevFilms.map((film) =>
+            film.id === id ? { ...film, watched: !film.watched } : film,
+        ),
+        );
+    };
+
+    const markAllAsWatched = () => {
+        setFilms((prevFilms) =>
+        prevFilms.map((film) => ({
+            ...film,
+            watched: true,
+        })),
+        );
+    };
 
     useEffect(()=>{
         const watchedCount = films.filter(f=>f.watched).length;
@@ -57,5 +59,12 @@ export function WatchlistProvider({ children }: { children: ReactNode }) {
     
     return (<WatchlistContext.Provider value={{ films, addFilm, removeFilm, toggleWatched, markAllAsWatched }}>{children}</WatchlistContext.Provider>);
 }
+export function useWatchlist() {
+  const context = useContext(WatchlistContext);
 
-export const useWatchlist = () => useContext(WatchlistContext)
+  if (!context) {
+    throw new Error("useWatchlist must be used inside WatchlistProvider");
+  }
+
+  return context;
+}

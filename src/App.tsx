@@ -1,4 +1,4 @@
-import { AddFilmForm } from "./components/addFilmForm";
+import AddFilmForm from "./components/addFilmForm";
 import { FilmCard } from "./components/FilmCard";
 import { useWatchlist } from "./context/WatchlistContext";
 
@@ -12,12 +12,12 @@ function App() {
     <button onClick={markAllAsWatched}> Označit vše jako zhlédnuté</button>
     {   
       films.map((film) => (
-        <FilmCard key={film.title} {...film} onToggleWatched={() => toggleWatched(film.id)} onRemove= {()=> removeFilm(film.id)}/>
+        <FilmCard key={film.id} {...film} onToggleWatched={() => toggleWatched(film.id)} onRemove= {()=> removeFilm(film.id)}/>
       ))
     }
-    <AddFilmForm onAdd={addFilm}></AddFilmForm>
+    <AddFilmForm/>
     </main>
-  );s
+  );
 }
 
 export default App
