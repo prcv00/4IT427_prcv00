@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useWatchlist } from "../context/WatchlistContext";
+import { useNavigate } from "react-router-dom";
 
 function AddFilmForm() {
   const { addFilm } = useWatchlist();
@@ -15,6 +16,7 @@ function AddFilmForm() {
   const labelClasses =
     "mb-1 block text-sm font-medium text-gray-700 dark:text-gray-200";
 
+  const navigate = useNavigate();
   return (
     <form
       className="mt-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-5 shadow-sm"
@@ -102,6 +104,7 @@ function AddFilmForm() {
 
       <button
         type="submit"
+        onClick={()=>navigate("/")}
         className="mt-5 inline-flex items-center justify-center rounded-md bg-teal-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-teal-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400"
       >
         Přidat film

@@ -1,56 +1,43 @@
-import AddFilmForm from "./components/AddFilmForm";
-import { FilmCard } from "./components/FilmCard";
+import { Navigate, NavLink, Route, Routes } from "react-router-dom";
+import { WatchlistPage } from "./pages/WatchlistPage";
+import { AddFilmPage } from "./pages/AddFilmPage";
 import { ThemeToggle } from "./components/ThemeToggle";
-import { useWatchlist } from "./context/WatchlistContext";
 
 /* Stylingová metoda:  Tailwind CSS */
 function App() {
-  const { films, removeFilm, toggleWatched, markAllAsWatched } = useWatchlist();
-
-  const watchedCount = films.filter((film) => film.watched).length;
-  const totalCount = films.length;
+  const linkClasses = ({ isActive }: { isActive: boolean }) =>
+    [
+      "inline-flex items-center rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
+      isActive
+        ? "bg-teal-600 text-white shadow-sm"
+        : "text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white",
+    ].join(" ");
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors">
-      <main className="mx-auto w-full max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
-        <header className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">
-              🎬 Film Watchlist
-            </h1>
-            <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-              <span className="font-semibold text-teal-600 dark:text-teal-300">
-                {watchedCount}
-              </span>{" "}
-              / {totalCount} zhlédnuto
-            </p>
+      <nav className="sticky top-0 z-10 border-b border-gray-200 dark:border-gray-700 bg-white/80 dark:bg-gray-900/80 backdrop-blur">
+        <div className="mx-auto flex w-full max-w-5xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
+          <div className="flex items-center gap-2">
+            <span className="text-lg font-bold tracking-tight">🎬 Watchlist</span>
           </div>
-          <ThemeToggle />
-        </header>
+          <div className="flex items-center gap-1 sm:gap-2">
+            <NavLink to="/" end className={linkClasses}>
+              Můj watchlist
+            </NavLink>
+            <NavLink to="/form" className={linkClasses}>
+              Přidat film
+            </NavLink>
+            <span className="mx-1 hidden h-5 w-px bg-gray-200 dark:bg-gray-700 sm:block" />
+            <ThemeToggle />
+          </div>
+        </div>
+      </nav>
 
-        <section className="mb-6 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 shadow-sm">
-          <button
-            type="button"
-            onClick={markAllAsWatched}
-            className="inline-flex items-center justify-center rounded-md bg-purple-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-purple-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-400"
-          >
-            Označit vše jako zhlédnuté
-          </button>
-        </section>
-
-        <section className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          {films.map((film) => (
-            <FilmCard
-              key={film.id}
-              {...film}
-              onToggleWatched={() => toggleWatched(film.id)}
-              onRemove={() => removeFilm(film.id)}
-            />
-          ))}
-        </section>
-
-        <AddFilmForm />
-      </main>
+      <Routes>
+        <Route path="/" element={<WatchlistPage />} />
+        <Route path="/form" element={<AddFilmPage />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
     </div>
   );
 }
