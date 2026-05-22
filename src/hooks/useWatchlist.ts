@@ -1,8 +1,8 @@
-import type { Film } from "@/App"
+import type { Film } from "@/types/film.types"
 import { useEffect, useState } from "react"
 
 export function useWatchlist(initialFilms: Film[]) {
-    const [films, setFilms] = useState(initialFilms)
+    const [films, setFilms] = useState<Film[]>(initialFilms)
 
     function toggleWatched(title: string){
         return () => (
@@ -17,7 +17,7 @@ export function useWatchlist(initialFilms: Film[]) {
 
     useEffect(()=>{
         const watchedCount = films.filter(f=>f.watched).length;
-        document.title = `Watchlist (${watchedCount}/${films.length}) zhlédnuto`
+        document.title = `Watchlist (${watchedCount}/${films.length} zhlédnuto)`
     },[films]);
     
     return {films, toggleWatched, markAllAsWatched}
